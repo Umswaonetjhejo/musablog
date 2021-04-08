@@ -15,8 +15,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('home.index');
+        // Get all Posts, ordered by the newest first
+        $posts = Post::latest()->get();
 
+        // Pass Post Collection to view
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -75,7 +78,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -87,7 +90,21 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        // Validate posted form data
+        $validated = $request->validate([
+            'title' => 'required|string|unique:posts|min:5|max:100',
+            'content' => 'required|string|min:5|max:2000',
+            'category' => 'required|string|max:30'
+        ]);
+
+        // Create slug from title
+        $validated['slug'] = Str::slug($validated['title'], '-');
+
+        // Update Post with validated data
+        $post->update($validated);
+
+        // Redirect the user to the created post woth an updated notification
+        return redirect(route('posts.index', [$post->slug]))->with('notification', 'Post updated!');
     }
 
     /**
@@ -98,6 +115,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        // Delete the specified Post
+        $post->delete();
+
+        // Redirect user with a deleted notification
+        return redirect(route('posts.index'))->with('notification', '"' . $post->title .  '" deleted!');
     }
 }
