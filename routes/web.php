@@ -20,3 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'PostController@index');
 
 Route::resource('posts', 'PostController');
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

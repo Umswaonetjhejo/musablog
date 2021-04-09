@@ -40,6 +40,13 @@
         </div>
 
         <div class="field">
+            <label class="label">User Id</label>
+            <div class="control">
+                <input type="text" name="user_id" value="{{ Auth::user()->id }}" class="input" placeholder="Title" minlength="5" maxlength="100" required />
+            </div>
+        </div>
+
+        <div class="field">
             <div class="control">
                 <button type="submit" class="button is-link is-outlined">Publish</button>
             </div>

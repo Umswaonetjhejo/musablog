@@ -45,14 +45,23 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|unique:posts|min:5|max:100',
             'content' => 'required|string|min:5|max:2000',
-            'category' => 'required|string|max:30'
+            'category' => 'required|string|max:30',
+            'user_id' => 'required|integer|max:6'
         ]);
 
         // Create slug from title
         $validated['slug'] = Str::slug($validated['title'], '-');
 
         // Create and save post with validated data
-        $post = Post::create($validated);
+        //$post = Post::create($validated);
+        $post = Post::create([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'category' => $request->input('category'),
+            'user_id' => $request->input('user_id'),
+            'slug' => $validated['slug'],
+
+        ]);
 
         // Redirect the user to the created post with a success notification
         return redirect(route('posts.show', [$post->slug]))->with('notification', 'Post created!');
